@@ -1,6 +1,8 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,7 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { useSearchParams, useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -18,9 +19,15 @@ import {
 } from "@/components/ui/select";
 import { Plus, Trash, GripVertical } from "lucide-react";
 
-//import { Editor } from "@tiptap/react";
-
 export default function AddServicePage() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading...</div>}>
+      <AddServiceContent />
+    </Suspense>
+  );
+}
+
+function AddServiceContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug");
@@ -70,7 +77,7 @@ export default function AddServicePage() {
         setSections(
           data.sections.map((s) => ({
             ...s,
-            section_image: null, // user can re-upload
+            section_image: null,
             section_image_type: s.section_image_type || "",
           })),
         );
@@ -101,6 +108,7 @@ export default function AddServicePage() {
   };
 
   const handleSectionImage = (index, file) => {
+    if (!file) return;
     const copy = [...sections];
     copy[index].section_image = file;
     copy[index].section_image_type = file.type;
@@ -112,7 +120,7 @@ export default function AddServicePage() {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = (err) => reject(err);
+      reader.onerror = reject;
     });
 
   const submitService = async (statusOverride = null) => {
@@ -152,7 +160,6 @@ export default function AddServicePage() {
       });
 
       const result = await res.json();
-      setLoading(false);
 
       if (result.success) {
         alert(`Service ${slug ? "updated" : "saved"}!`);
@@ -161,11 +168,13 @@ export default function AddServicePage() {
         alert("Error: " + result.error);
       }
     } catch (err) {
-      setLoading(false);
       console.error(err);
       alert("Submission failed!");
     }
+
+    setLoading(false);
   };
+
   return (
     <SidebarProvider
       style={{
@@ -261,13 +270,14 @@ export default function AddServicePage() {
               <Input
                 type="file"
                 accept="image/*"
-                onChange={(e) =>
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
                   setServiceData({
                     ...serviceData,
-                    cover_image: e.target.files[0],
-                    cover_image_type: e.target.files[0].type,
-                  })
-                }
+                    cover_image: file || null,
+                    cover_image_type: file?.type || "",
+                  });
+                }}
               />
               {serviceData.cover_image && typeof window !== "undefined" && (
                 <img
@@ -334,7 +344,7 @@ export default function AddServicePage() {
                         handleSectionImage(idx, e.target.files[0])
                       }
                     />
-                    {sec.section_image && (
+                    {sec.section_image && typeof window !== "undefined" && (
                       <img
                         src={URL.createObjectURL(sec.section_image)}
                         alt="preview"
@@ -394,6 +404,7 @@ export default function AddServicePage() {
             </CardContent>
           </Card>
 
+          {/* Status Selector */}
           <Card>
             <CardHeader>
               <CardTitle>Status</CardTitle>
