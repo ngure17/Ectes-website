@@ -1,5 +1,4 @@
-"use client"; // ensures the page is fully client-only
-export const dynamic = "force-dynamic";
+"use client";
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -19,11 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Trash, GripVertical } from "lucide-react";
 
-export default function AddServicePage() {
-  return <AddServiceContent />;
-}
-
-function AddServiceContent() {
+export default function AddServiceContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const slug = searchParams?.get("slug");
@@ -71,11 +66,11 @@ function AddServiceContent() {
         });
 
         setSections(
-          (data.sections || []).map((s, index) => ({
+          (data.sections || []).map((s, idx) => ({
             ...s,
             section_image: null,
             section_image_type: s.section_image_type || "",
-            position: s.position || index + 1,
+            position: s.position || idx + 1,
           })),
         );
       } catch (err) {
@@ -121,6 +116,7 @@ function AddServiceContent() {
       reader.onerror = reject;
     });
 
+  // Submit handler
   const submitService = async (statusOverride = null) => {
     setLoading(true);
     try {
