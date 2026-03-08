@@ -72,7 +72,7 @@ export default function AddServicePage() {
             ...s,
             section_image: null, // user can re-upload
             section_image_type: s.section_image_type || "",
-          }))
+          })),
         );
       } catch (err) {
         console.error("Failed to load service:", err);
@@ -125,9 +125,11 @@ export default function AddServicePage() {
           content: sec.content,
           icon: sec.icon,
           position: sec.position,
-          section_image: sec.section_image ? await fileToBase64(sec.section_image) : sec.section_image_base64 || null,
+          section_image: sec.section_image
+            ? await fileToBase64(sec.section_image)
+            : sec.section_image_base64 || null,
           section_image_type: sec.section_image_type,
-        }))
+        })),
       );
 
       const payload = {
@@ -267,7 +269,7 @@ export default function AddServicePage() {
                   })
                 }
               />
-              {serviceData.cover_image && (
+              {serviceData.cover_image && typeof window !== "undefined" && (
                 <img
                   src={URL.createObjectURL(serviceData.cover_image)}
                   alt="cover preview"
