@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,11 +20,7 @@ import {
 import { Plus, Trash, GripVertical } from "lucide-react";
 
 export default function AddServicePage() {
-  return (
-    <Suspense fallback={<div className="p-6">Loading...</div>}>
-      <AddServiceContent />
-    </Suspense>
-  );
+  return <AddServiceContent />;
 }
 
 function AddServiceContent() {
@@ -61,11 +57,11 @@ function AddServiceContent() {
         if (!data) return;
 
         setServiceData({
-          title: data.title,
-          slug: data.slug,
-          short_description: data.short_description,
-          detailed_description: data.detailed_description,
-          icon: data.icon,
+          title: data.title || "",
+          slug: data.slug || "",
+          short_description: data.short_description || "",
+          detailed_description: data.detailed_description || "",
+          icon: data.icon || "",
           cover_image: null,
           cover_image_type: data.cover_image_type || "",
           meta_title: data.meta_title || "",
@@ -75,10 +71,11 @@ function AddServiceContent() {
         });
 
         setSections(
-          data.sections.map((s) => ({
+          (data.sections || []).map((s, index) => ({
             ...s,
             section_image: null,
             section_image_type: s.section_image_type || "",
+            position: s.position || index + 1,
           })),
         );
       } catch (err) {
@@ -89,6 +86,7 @@ function AddServiceContent() {
     fetchService();
   }, [slug]);
 
+  // Section handlers
   const addSection = () => {
     setSections([
       ...sections,
@@ -123,9 +121,9 @@ function AddServiceContent() {
       reader.onerror = reject;
     });
 
+  // Submit handler
   const submitService = async (statusOverride = null) => {
     setLoading(true);
-
     try {
       const sectionsPayload = await Promise.all(
         sections.map(async (sec) => ({
@@ -160,7 +158,6 @@ function AddServiceContent() {
       });
 
       const result = await res.json();
-
       if (result.success) {
         alert(`Service ${slug ? "updated" : "saved"}!`);
         router.push("/admin/dashboard/services");
@@ -171,7 +168,6 @@ function AddServiceContent() {
       console.error(err);
       alert("Submission failed!");
     }
-
     setLoading(false);
   };
 
@@ -306,7 +302,6 @@ function AddServiceContent() {
                   <div className="absolute left-2 top-2 cursor-move">
                     <GripVertical className="w-5 h-5 text-muted-foreground" />
                   </div>
-
                   <Input
                     placeholder="Section Heading"
                     value={sec.heading}
@@ -334,7 +329,6 @@ function AddServiceContent() {
                       setSections(copy);
                     }}
                   />
-
                   <div>
                     <label className="text-sm">Upload Section Image</label>
                     <Input
@@ -352,7 +346,6 @@ function AddServiceContent() {
                       />
                     )}
                   </div>
-
                   <div className="flex justify-end">
                     <Button
                       variant="destructive"
@@ -367,7 +360,7 @@ function AddServiceContent() {
             </CardContent>
           </Card>
 
-          {/* SEO & Status */}
+          {/* SEO & Visibility */}
           <Card>
             <CardHeader>
               <CardTitle>SEO & Visibility</CardTitle>
