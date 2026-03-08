@@ -1,7 +1,7 @@
-"use client";
+"use client"; // <-- ensures entire page is client-only
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,13 +20,17 @@ import {
 import { Plus, Trash, GripVertical } from "lucide-react";
 
 export default function AddServicePage() {
-  return <AddServiceContent />;
+  return (
+    <Suspense fallback={<div className="p-6">Loading Service Editor...</div>}>
+      <AddServiceContent />
+    </Suspense>
+  );
 }
 
 function AddServiceContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const slug = searchParams.get("slug");
+  const searchParams = useSearchParams(); // safe now inside client component
+  const slug = searchParams?.get("slug"); // optional chaining to be safe
 
   const [loading, setLoading] = useState(false);
 
