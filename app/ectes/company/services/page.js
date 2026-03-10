@@ -1,50 +1,9 @@
-//Solutions by ECTES
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { Header } from "../../components/Header";
 import { BookOpen, Cpu, Zap, Toolbox, Home } from "lucide-react";
-
-const services = [
-  {
-    title: "Mechanical Engineering",
-    description:
-      "Hands-on mechanical workshops to master modern engineering techniques.",
-    icon: Toolbox,
-    accent: "blue",
-    href: "#",
-  },
-  {
-    title: "Electrical & Electronics",
-    description:
-      "Technical courses in electrical systems, electronics, and circuitry.",
-    icon: Zap,
-    accent: "green",
-    href: "#",
-  },
-  {
-    title: "Automotive Repair",
-    description:
-      "Professional automotive repair trainings for cars, bikes, and industrial vehicles.",
-    icon: Cpu,
-    accent: "purple",
-    href: "#",
-  },
-  {
-    title: "Building & Construction",
-    description:
-      "Courses in construction, masonry, and modern building techniques.",
-    icon: Home,
-    accent: "red",
-    href: "#",
-  },
-  {
-    title: "Trainings",
-    description:
-      "We offer practical, industry-focused trainings for individuals and corporate personnel..",
-    icon: Home,
-    accent: "red",
-    href: "/ectes/company/trainings",
-  },
-];
+import Link from "next/link";
 
 const borderAccent = {
   orange:
@@ -80,6 +39,32 @@ const textAccent = {
 };
 
 export default function Solutions() {
+  const [services, setServices] = useState([]);
+
+  // Fetch services from API
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const res = await fetch("/api/services");
+        const data = await res.json();
+        const mapped = data.map((s, idx) => ({
+          title: s.title,
+          description:
+            s.short_description?.trim() ||
+            s.detailed_description?.trim() ||
+            "No description available.",
+          icon: [Toolbox, Zap, Cpu, Home, BookOpen][idx % 5], // Rotate icons
+          accent: ["blue", "green", "purple", "red", "orange"][idx % 5], // Rotate accents
+          href: `/ectes/company/services/${s.slug}`, // Link to dynamic slug page
+        }));
+        setServices(mapped);
+      } catch (err) {
+        console.error("Failed to fetch services:", err);
+      }
+    }
+    fetchServices();
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -105,6 +90,7 @@ export default function Solutions() {
             </div>
           </div>
         </section>
+
         <section className="bg-background text-foreground py-20 px-6 sm:px-12 lg:px-24">
           {/* Section Header */}
           <div className="group max-w-7xl mx-auto text-center mb-12 rounded-2xl p-6 transition-all duration-300 hover:bg-muted/40 dark:hover:bg-muted/20">
@@ -128,67 +114,57 @@ export default function Solutions() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, idx) => {
               const Icon = service.icon;
-
               return (
-                <div
+                <Link
                   key={idx}
-                  className={`
-                group relative p-6 rounded-xl bg-card border border-border
-                shadow-lg transition-all duration-300
-                hover:shadow-xl hover:-translate-y-1
-                focus-within:shadow-xl focus-within:-translate-y-1
-                active:shadow-xl active:-translate-y-1
-                ${borderAccent[service.accent]}
-                flex flex-col gap-4
-              `}
+                  href={service.href}
+                  className={`group relative p-6 rounded-xl bg-card border border-border
+                    shadow-lg transition-all duration-300
+                    hover:shadow-xl hover:-translate-y-1
+                    focus-within:shadow-xl focus-within:-translate-y-1
+                    active:shadow-xl active:-translate-y-1
+                    ${borderAccent[service.accent]}
+                    flex flex-col gap-4`}
                 >
                   {/* Icon */}
                   <div
-                    className={`
-                  w-12 h-12 flex items-center justify-center rounded-full
-                  bg-muted transition-colors duration-300
-                  ${bgAccent[service.accent]}
-                `}
+                    className={`w-12 h-12 flex items-center justify-center rounded-full
+                      bg-muted transition-colors duration-300
+                      ${bgAccent[service.accent]}`}
                   >
                     <Icon
-                      className={`
-                    w-6 h-6 text-muted-foreground
-                    transition-colors duration-300
-                    ${textAccent[service.accent]}
-                  `}
+                      className={`w-6 h-6 text-muted-foreground transition-colors duration-300 ${textAccent[service.accent]}`}
                     />
                   </div>
 
                   {/* Title */}
                   <h2
-                    className={`
-                  text-xl font-semibold transition-all duration-300
-                  ${textAccent[service.accent]} group-hover:font-bold group-focus-within:font-bold group-active:font-bold
-                `}
+                    className={`text-xl font-semibold transition-all duration-300
+                      ${textAccent[service.accent]} group-hover:font-bold group-focus-within:font-bold group-active:font-bold`}
                   >
                     {service.title}
                   </h2>
 
                   {/* Description */}
                   <p className="text-muted-foreground transition-colors duration-300 group-hover:text-foreground/80 group-focus-within:text-foreground/80 group-active:text-foreground/80">
-                    {service.description}
+                    {service.description
+                              ? service.description
+                                  .split(" ")
+                                  .slice(0, 10)
+                                  .join(" ") + "..."
+                              : "No description available."}
                   </p>
 
                   {/* CTA */}
-                  <a
-                    href={service.href}
-                    className={`
-                  mt-auto inline-flex items-center gap-2
-                  text-sm font-semibold transition-all duration-300
-                  ${textAccent[service.accent]}
-                `}
+                  <span
+                    className={`mt-auto inline-flex items-center gap-2 text-sm font-semibold transition-all duration-300 ${textAccent[service.accent]}`}
                   >
                     Learn more
                     <span className="inline-block transition-transform duration-300 group-hover:translate-x-1 group-focus-within:translate-x-1 group-active:translate-x-1">
                       →
                     </span>
-                  </a>
-                </div>
+                  </span>
+                </Link>
               );
             })}
           </div>

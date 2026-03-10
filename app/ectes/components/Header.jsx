@@ -68,6 +68,7 @@ const menuConfig = {
 /* ------------------ HEADER ------------------ */
 export function Header() {
   const [trainingPrograms, setTrainingPrograms] = useState([]);
+  const [services, setServices] = useState([]);
   useEffect(() => {
     async function fetchCourses() {
       const res = await fetch("/api/courses");
@@ -75,6 +76,16 @@ export function Header() {
       setTrainingPrograms(data);
     }
     fetchCourses();
+
+    async function fetchServices() {
+      try {
+        const data = await fetch("/api/services").then((res) => res.json());
+        setServices(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchServices();
   }, []);
 
   return (
@@ -96,18 +107,15 @@ export function Header() {
           <NavigationMenu>
             <NavigationMenuList className="flex items-center gap-6">
               <NavigationMenuItem>
-                <NavigationMenuLink asChild>
+                <NavigationMenuTrigger>
                   <Link href="/" className="font-medium">
                     Home
                   </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Get Started</NavigationMenuTrigger>
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="w-96">
-                    <ListItem href="/" title="Introduction">
-                      Our Introductions and Services
+                    <ListItem href="/" title="Home">
+                      ECTES overview
                     </ListItem>
                     <ListItem href="/docs/installation" title="News Update">
                       Find our Updates
@@ -134,32 +142,75 @@ export function Header() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger>
-                  <Link href={"/ectes/company/services"}>Solutions</Link>
-                </NavigationMenuTrigger>
+                <NavigationMenuTrigger>Trainings</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="w-96">
-                    <ListItem href="/" title="Mechanical Engineering">
-                      Our Introductions and Services
-                    </ListItem>
                     <ListItem
-                      href="/docs/installation"
-                      title="Electrical and Electronics"
+                      href="/ectes/company/trainings"
+                      title="Trainings And Consultancies"
+                      badge={
+                        trainingPrograms.length > 0 ? (
+                          <Badge
+                            variant="secondary"
+                            className="text-xs bg-blue-800 text-white text-xs hover:bg-amber-800"
+                          >
+                            Intake ongoing
+                          </Badge>
+                        ) : null
+                      }
                     >
-                      Find our Updates
+                      we offer a wide range of training programs and
+                      consultancies in the fields of mechanical engineering,
+                      electrical and electronics, automotive repair, and
+                      building and construction. Our training programs are
+                      designed to equip individuals with the necessary skills
+                      and knowledge to excel in their respective industries.
+                      Whether you're looking to enhance your technical expertise
+                      or seeking guidance on specific projects, our
+                      consultancies provide tailored solutions to meet your
+                      needs.
                     </ListItem>
-                    <ListItem
-                      href="/docs/primitives/typography"
-                      title="Automotive Repair"
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>
+                  <span className="font-semibold text-gray-700 dark:text-white hover:text-gray-900 cursor-pointer">
+                    <Link
+                      href="/ectes/company/services"
+                      className="font-medium"
                     >
-                      Styles for headings and paragraphs.
-                    </ListItem>
-                    <ListItem
-                      href="/docs/primitives/typography"
-                      title="Building and construction"
-                    >
-                      Styles for headings and paragraphs.
-                    </ListItem>
+                      Productions & Services
+                    </Link>
+                  </span>
+                </NavigationMenuTrigger>
+
+                <NavigationMenuContent className="bg-white dark:bg-black shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+                  <ul className="w-96 flex flex-col gap-3">
+                    {services.map((service) => (
+                      <li
+                        key={service.id}
+                        className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
+                      >
+                        <Link
+                          href={`/ectes/company/services/${service.slug}`}
+                          className="block p-3"
+                        >
+                          <h3 className="text-gray-900 dark:text-white font-medium text-lg">
+                            {service.title}
+                          </h3>
+                          <p className="text-gray-500 dark:text-gray-300 text-sm mt-1">
+                            {service.short_description
+                              ? service.short_description
+                                  .split(" ")
+                                  .slice(0, 10)
+                                  .join(" ") + "..."
+                              : "No description available."}
+                          </p>
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -172,7 +223,7 @@ export function Header() {
                       Our Introductions and Services
                     </ListItem>
                     <ListItem
-                      href="/docs/installation"
+                      href="/ectes/company/careers"
                       title="Careers and Jobs"
                     >
                       Find our Updates

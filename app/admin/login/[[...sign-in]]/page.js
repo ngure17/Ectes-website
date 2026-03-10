@@ -17,7 +17,7 @@ export default function Login() {
 
   return (
     <main className="min-h-screen flex items-center justify-center mt-3.5">
-      <SignIn path="/admin/login" routing="path" />
+      <SignIn path="/admin/login" routing="path" afterSignInUrl="/admin/dashboard"/>
     </main>
   );
 }

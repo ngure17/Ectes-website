@@ -76,7 +76,7 @@ export async function POST(req) {
 export async function GET() {
   try {
     const servicesRes = await pool.query(`
-      SELECT id, title, slug, status
+      SELECT *, encode(cover_image, 'base64') AS cover_image, cover_image_type
       FROM services
       ORDER BY created_at DESC
     `);

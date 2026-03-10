@@ -1,51 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BookOpen, Cpu, Zap, Toolbox, Home } from "lucide-react";
-
-// Services array: use component references, not JSX
-const services = [
-  {
-    title: "Trainings",
-    description:
-      "We offer practical, industry-focused trainings for individuals and corporate personnel.",
-    icon: BookOpen,
-    accent: "orange",
-    href: "/ectes/company/trainings",
-  },
-  {
-    title: "Mechanical Engineering",
-    description:
-      "Hands-on mechanical workshops to master modern engineering techniques.",
-    icon: Toolbox,
-    accent: "blue",
-    href: "#",
-  },
-  {
-    title: "Electrical & Electronics",
-    description:
-      "Technical courses in electrical systems, electronics, and circuitry.",
-    icon: Zap,
-    accent: "green",
-    href: "#",
-  },
-  {
-    title: "Automotive Repair",
-    description:
-      "Professional automotive repair trainings for cars, bikes, and industrial vehicles.",
-    icon: Cpu,
-    accent: "purple",
-    href: "#",
-  },
-  {
-    title: "Building & Construction",
-    description:
-      "Courses in construction, masonry, and modern building techniques.",
-    icon: Home,
-    accent: "red",
-    href: "#",
-  },
-];
+import Link from "next/link";
 
 // Tailwind accent class maps
 const borderAccent = {
@@ -81,7 +38,50 @@ const textAccent = {
   red: "group-hover:text-red-600 group-focus-within:text-red-600 group-active:text-red-600",
 };
 
+// Helper to trim description
+function trimDescription(desc, wordLimit = 20) {
+  if (!desc) return "No description available.";
+  const words = desc.split(" ");
+  return words.length > wordLimit
+    ? words.slice(0, wordLimit).join(" ") + "..."
+    : desc;
+}
+
 export default function EctesBrief() {
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const res = await fetch("/api/services");
+        const data = await res.json();
+
+        const mapped = data.map((s, idx) => ({
+          title: s.title,
+          description: trimDescription(s.short_description),
+          icon: [Toolbox, Zap, Cpu, Home, BookOpen][idx % 5],
+          accent: ["blue", "green", "purple", "red", "orange"][idx % 5],
+          href: `/ectes/company/services/${s.slug}`,
+        }));
+
+        setServices(mapped);
+      } catch (err) {
+        console.error("Failed to fetch services:", err);
+      }
+    }
+    fetchServices();
+  }, []);
+
+  // Predefined Trainings card
+  const trainingsCard = {
+    title: "Trainings",
+    description:
+      "We offer practical, industry-focused trainings for individuals and corporate personnel.",
+    icon: BookOpen,
+    accent: "orange",
+    href: "/ectes/company/trainings",
+  };
+
   return (
     <section className="bg-background text-foreground py-20 px-6 sm:px-12 lg:px-24">
       {/* Section Header */}
@@ -103,69 +103,86 @@ export default function EctesBrief() {
 
       {/* Services Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Trainings Card */}
+        <Link
+          href={trainingsCard.href}
+          className={`group relative p-6 rounded-xl bg-card border border-border
+            shadow-lg transition-all duration-300
+            hover:shadow-xl hover:-translate-y-1
+            focus-within:shadow-xl focus-within:-translate-y-1
+            active:shadow-xl active:-translate-y-1
+            ${borderAccent[trainingsCard.accent]}
+            flex flex-col gap-4`}
+        >
+          <div
+            className={`w-12 h-12 flex items-center justify-center rounded-full bg-muted transition-colors duration-300 ${bgAccent[trainingsCard.accent]}`}
+          >
+            <trainingsCard.icon
+              className={`w-6 h-6 text-muted-foreground transition-colors duration-300 ${textAccent[trainingsCard.accent]}`}
+            />
+          </div>
+          <h2
+            className={`text-xl font-semibold transition-all duration-300 ${textAccent[trainingsCard.accent]} group-hover:font-bold group-focus-within:font-bold group-active:font-bold`}
+          >
+            {trainingsCard.title}
+          </h2>
+          <p className="text-muted-foreground transition-colors duration-300 group-hover:text-foreground/80 group-focus-within:text-foreground/80 group-active:text-foreground/80">
+            {trainingsCard.description}
+          </p>
+          <span
+            className={`mt-auto inline-flex items-center gap-2 text-sm font-semibold transition-all duration-300 ${textAccent[trainingsCard.accent]}`}
+          >
+            Learn more
+            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1 group-focus-within:translate-x-1 group-active:translate-x-1">
+              →
+            </span>
+          </span>
+        </Link>
+
+        {/* Dynamically fetched services */}
         {services.map((service, idx) => {
           const Icon = service.icon;
-
           return (
-            <div
+            <Link
               key={idx}
-              className={`
-                group relative p-6 rounded-xl bg-card border border-border
+              href={service.href}
+              className={`group relative p-6 rounded-xl bg-card border border-border
                 shadow-lg transition-all duration-300
                 hover:shadow-xl hover:-translate-y-1
                 focus-within:shadow-xl focus-within:-translate-y-1
                 active:shadow-xl active:-translate-y-1
                 ${borderAccent[service.accent]}
-                flex flex-col gap-4
-              `}
+                flex flex-col gap-4`}
             >
-              {/* Icon */}
               <div
-                className={`
-                  w-12 h-12 flex items-center justify-center rounded-full
-                  bg-muted transition-colors duration-300
-                  ${bgAccent[service.accent]}
-                `}
+                className={`w-12 h-12 flex items-center justify-center rounded-full bg-muted transition-colors duration-300 ${bgAccent[service.accent]}`}
               >
                 <Icon
-                  className={`
-                    w-6 h-6 text-muted-foreground
-                    transition-colors duration-300
-                    ${textAccent[service.accent]}
-                  `}
+                  className={`w-6 h-6 text-muted-foreground transition-colors duration-300 ${textAccent[service.accent]}`}
                 />
               </div>
-
-              {/* Title */}
               <h2
-                className={`
-                  text-xl font-semibold transition-all duration-300
-                  ${textAccent[service.accent]} group-hover:font-bold group-focus-within:font-bold group-active:font-bold
-                `}
+                className={`text-xl font-semibold transition-all duration-300 ${textAccent[service.accent]} group-hover:font-bold group-focus-within:font-bold group-active:font-bold`}
               >
                 {service.title}
               </h2>
-
-              {/* Description */}
               <p className="text-muted-foreground transition-colors duration-300 group-hover:text-foreground/80 group-focus-within:text-foreground/80 group-active:text-foreground/80">
-                {service.description}
+                {service.description
+                              ? service.description
+                                  .split(" ")
+                                  .slice(0, 10)
+                                  .join(" ") + "..."
+                              : "No description available."}
               </p>
-
-              {/* CTA */}
-              <a
-                href={service.href}
-                className={`
-                  mt-auto inline-flex items-center gap-2
-                  text-sm font-semibold transition-all duration-300
-                  ${textAccent[service.accent]}
-                `}
+              <span
+                className={`mt-auto inline-flex items-center gap-2 text-sm font-semibold transition-all duration-300 ${textAccent[service.accent]}`}
               >
                 Learn more
                 <span className="inline-block transition-transform duration-300 group-hover:translate-x-1 group-focus-within:translate-x-1 group-active:translate-x-1">
                   →
                 </span>
-              </a>
-            </div>
+              </span>
+            </Link>
           );
         })}
       </div>

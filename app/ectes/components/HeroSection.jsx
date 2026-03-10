@@ -55,7 +55,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6 }}
           className="text-4xl sm:text-5xl lg:text-6xl font-extrabold light:text-black dark:text-slate-200 leading-tight mb-6"
         >
-          Building Skills. Inspiring Entrepreneurs.{" "}
+          Building Skills, Futures <br></br>
           <span className="text-amber-500">Driving Innovation.</span>
         </motion.h1>
 
@@ -66,17 +66,13 @@ export default function HeroSection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-lg sm:text-xl light:text-black dark:text-slate-200 leading-relaxed max-w-3xl mx-auto"
         >
-          At{" "}
           <span className="font-bold text-amber-600">
-            Eastlands College of Technology Enterprise
-          </span>
-          , we equip aspiring innovators and entrepreneurs with hands-on skills
-          and practical knowledge through cutting-edge{" "}
-          <span className="font-medium text-red-300">TVET programs</span>. Our
-          enterprise bridges education and real-world opportunities, empowering
-          students and professionals href turn ideas into thriving businesses.
+            Eastlands College of Technology Enterprise Services (ECTES)
+          </span>{" "}
+          empowers the next generation of skilled professionals by combining
+          hands-on training, real-world projects, and high-quality technical
+          solutions for businesses, institutions, and communities.
         </motion.p>
-
         {/* Gallery Section */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
