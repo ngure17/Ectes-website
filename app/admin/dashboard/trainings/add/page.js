@@ -10,7 +10,7 @@ export default function AddTrainingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    course_name: "",
+    course_title: "",
     brief_explanation: "",
     duration: "",
     intake_period: "",
@@ -66,9 +66,9 @@ export default function AddTrainingPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          name="course_name"
+          name="course_title"
           placeholder="Course Name"
-          value={form.course_name}
+          value={form.course_title}
           onChange={handleChange}
           required
         />

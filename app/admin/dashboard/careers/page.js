@@ -8,27 +8,9 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import Links from "./components/Links";
-import JobsTable from "./jobs/page";
 import StatsCards from "./components/StatsCards";
+import Jobs from "./jobs/page";
 
-const jobs = [
-{
-id:1,
-title:"Machine Learning Engineer",
-department:"AI",
-location:"Remote",
-status:"Published",
-applicants:14
-},
-{
-id:2,
-title:"Backend Developer",
-department:"Engineering",
-location:"Nairobi",
-status:"Draft",
-applicants:0
-}
-]
 
 export default function Careers() {
   const router = useRouter()
@@ -38,7 +20,7 @@ export default function Careers() {
             <div className="flex items-center justify-end m-4 md:gap-150 sm:gap-20">
             <h1 className="m-2 font-bold"></h1>
             <Button
-              onClick={() => router.push("/admin/dashboard/services/add")}
+              onClick={() => router.push("/admin/dashboard/careers/jobs/add")}
               className="justify-end"
             >
               + Add Job & Career
@@ -49,7 +31,7 @@ export default function Careers() {
           
           <div>
             <StatsCards/>
-            <JobsTable jobs={jobs}/>
+            <Jobs/>
           </div>
         </section>
         </main>

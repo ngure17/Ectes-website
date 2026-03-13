@@ -25,11 +25,16 @@ export default function CourseDetail() {
       try {
         const res = await fetch(`/api/courses/${id}`);
         if (!res.ok) throw new Error("Course not found");
+
         const data = await res.json();
 
-        // Convert BYTEA image to base64 if image_url is empty
-        if (!data.image_url && data.image && data.image_type) {
-          data.image_url = `data:${data.image_type};base64,${data.image}`;
+        // Handle image
+        if (data.image) {
+          if (data.image.startsWith("data:image")) {
+            data.image_url = data.image;
+          } else {
+            data.image_url = `data:${data.image_type};base64,${data.image}`;
+          }
         }
 
         setCourse(data);
@@ -39,6 +44,7 @@ export default function CourseDetail() {
         setLoading(false);
       }
     }
+
     fetchCourse();
   }, [id]);
 
@@ -122,7 +128,7 @@ export default function CourseDetail() {
           {/* Course Image */}
           <div className="w-full h-80 md:h-96 overflow-hidden rounded-xl shadow-md mb-6">
             <img
-              src={course.image_url || "/default-course-logo.png"}
+              src={course.image || "/default-course-logo.png"}
               alt={course.course_name}
               className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
             />
@@ -146,10 +152,12 @@ export default function CourseDetail() {
                 <strong>Level:</strong> {course.level}
               </p>
               <p>
-                <strong>Start Date:</strong> {course.course_start_date}
+                <strong>Start Date:</strong>{" "}
+                {new Date(course.course_start_date).toLocaleString() || "N/A"}
               </p>
               <p>
-                <strong>End Date:</strong> {course.course_end_date || "N/A"}
+                <strong>End Date:</strong>{" "}
+                {new Date(course.course_end_date).toLocaleString() || "N/A"}
               </p>
             </div>
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
@@ -169,18 +177,20 @@ export default function CourseDetail() {
               Course Outline
             </h2>
 
-            {course.course_outline_file ? (
+            <div className="flex gap-4">
               <button
                 onClick={downloadPDF}
                 className="px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Download Course Outline (PDF)
               </button>
-            ) : (
-              <pre className="text-gray-800 dark:text-gray-200 text-sm whitespace-pre-wrap rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm">
-                {JSON.stringify(course.course_outline, null, 2)}
-              </pre>
-            )}
+
+              {course.course_outline && (
+                <pre className="text-gray-800 dark:text-gray-200 text-sm whitespace-pre-wrap rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm">
+                  {JSON.stringify(course.course_outline, null, 2)}
+                </pre>
+              )}
+            </div>
           </div>
           {showForm && (
             <form
@@ -258,7 +268,7 @@ export default function CourseDetail() {
               Apply Now
             </Button>
             <Button className="border w-40 mt-3">
-              <Link href={"#"}>Apply via Email</Link>
+              <Link href={"/ectes/company/contact"}>Apply via Email</Link>
             </Button>
           </div>
 

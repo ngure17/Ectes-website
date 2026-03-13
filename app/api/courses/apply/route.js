@@ -81,3 +81,50 @@ export async function GET() {
     );
   }
 }
+
+export async function DELETE(req) {
+  try {
+    const {
+      olderThanMonths = 3,
+      course_id = "all",
+      status = "all",
+    } = await req.json();
+
+    if (olderThanMonths < 3) {
+      return NextResponse.json(
+        { error: "You can only delete applications 3 months or older" },
+        { status: 400 },
+      );
+    }
+
+    // Start query
+    let query =
+      "DELETE FROM course_applications WHERE created_at < NOW() - make_interval(months => $1)";
+    const params = [olderThanMonths];
+    let paramIndex = 2;
+
+    if (status && status.toLowerCase() !== "all") {
+      query += ` AND status = $${paramIndex}`;
+      params.push(status);
+      paramIndex++;
+    }
+
+    if (course_id && course_id.toLowerCase() !== "all") {
+      query += ` AND course_id = $${paramIndex}`;
+      params.push(Number(course_id));
+    }
+
+    const result = await pool.query(query, params);
+
+    return NextResponse.json(
+      { message: `Deleted ${result.rowCount} applications` },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Failed to delete applications:", error);
+    return NextResponse.json(
+      { error: "Failed to delete applications" },
+      { status: 500 },
+    );
+  }
+}

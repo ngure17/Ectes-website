@@ -126,7 +126,7 @@ export default function HeroSection() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/services"
+              href="/ectes/company/trainings"
               className="group inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 l= dark:text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all"
             >
               <Wrench className="h-5 w-5" />

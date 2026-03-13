@@ -154,8 +154,7 @@ export default function TrainingList() {
                     <p>
                       <span className="font-semibold text-gray-800 dark:text-gray-200">
                         Start Date:
-                      </span>{" "}
-                      {program.start_date}
+                      </span>{" "} {new Date(program.start_date).toLocaleString() || "N/A"}
                     </p>
                     <p>
                       <span className="font-semibold text-gray-800 dark:text-gray-200">
@@ -187,7 +186,7 @@ export default function TrainingList() {
             requirements, and enrollment process.
           </p>
           <Link
-            href="/contact"
+            href="/ectes/company/contact"
             className="inline-block bg-[#DC5A59] text-white px-8 py-3 rounded text-lg font-semibold hover:bg-[#c54948] transition-colors"
           >
             Get Started Today

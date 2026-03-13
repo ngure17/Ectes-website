@@ -16,7 +16,13 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/mode-toggle";
@@ -105,14 +111,17 @@ export function Header() {
         {/* Desktop Navigation */}
         <div className="hidden sm:flex flex-1 justify-center">
           <NavigationMenu>
-            <NavigationMenuList className="flex items-center gap-6">
+            <NavigationMenuList className="flex items-center gap-3 relative">
               <NavigationMenuItem>
                 <NavigationMenuTrigger>
                   <Link href="/" className="font-medium">
                     Home
                   </Link>
                 </NavigationMenuTrigger>
-                <NavigationMenuContent>
+                <NavigationMenuContent
+                  align="start" // Aligns the dropdown to the start of the trigger
+                  className="bg-white dark:bg-black shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-4"
+                >
                   <ul className="w-96">
                     <ListItem href="/" title="Home">
                       ECTES overview
@@ -217,7 +226,7 @@ export function Header() {
 
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Company</NavigationMenuTrigger>
-                <NavigationMenuContent>
+                <NavigationMenuContent className="bg-white dark:bg-black shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                   <ul className="w-96">
                     <ListItem href="/ectes/company/about-us" title="About Us">
                       Our Introductions and Services
@@ -260,8 +269,22 @@ export function Header() {
 
 function MobileMenu({ trainingPrograms }) {
   const [open, setOpen] = useState(null);
+  const [services, setServices] = useState([]);
 
   const toggle = (section) => setOpen(open === section ? null : section);
+
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const data = await fetch("/api/services").then((res) => res.json());
+        setServices(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchServices();
+  }, []);
 
   return (
     <Sheet>
@@ -272,41 +295,55 @@ function MobileMenu({ trainingPrograms }) {
       </SheetTrigger>
 
       <SheetContent side="left" className="w-72">
+        <SheetHeader>
+          <SheetTitle>Menu</SheetTitle>
+        </SheetHeader>
         <nav className="mt-6 flex flex-col gap-6">
           {/* Home */}
           <Link href="/" className="text-lg font-semibold">
             Home
           </Link>
 
-          {/* Get Started */}
+          {/* Trainings */}
           <MobileSection
-            title="Get Started"
-            isOpen={open === "getStarted"}
-            onToggle={() => toggle("getStarted")}
+            title="Trainings"
+            isOpen={open === "trainings"}
+            onToggle={() => toggle("trainings")}
           >
-            {menuConfig.getStarted.map((item) => (
-              <MobileItem
-                key={item.title}
-                {...item}
-                badge={
-                  item.showBadge && trainingPrograms.length > 0 ? (
-                    <Badge className="bg-blue-800 text-white text-xs">
-                      Intake ongoing
-                    </Badge>
-                  ) : null
-                }
-              />
-            ))}
+            <MobileItem
+              href="/ectes/company/trainings"
+              title="Trainings And Consultancies"
+              description="Practical, industry-driven training programs designed to empower innovation and technical excellence."
+              badge={
+                trainingPrograms.length > 0 ? (
+                  <Badge className="bg-blue-800 text-white text-xs">
+                    Intake ongoing
+                  </Badge>
+                ) : null
+              }
+            />
           </MobileSection>
 
-          {/* Solutions */}
+          {/* Productions & Services */}
           <MobileSection
-            title="Solutions"
-            isOpen={open === "solutions"}
-            onToggle={() => toggle("solutions")}
+            title="Productions & Services"
+            isOpen={open === "services"}
+            onToggle={() => toggle("services")}
           >
-            {menuConfig.solutions.map((item) => (
-              <MobileLink key={item.title} {...item} />
+            {services.map((service) => (
+              <MobileItem
+                key={service.id}
+                href={`/ectes/company/services/${service.slug}`}
+                title={service.title}
+                description={
+                  service.short_description
+                    ? service.short_description
+                        .split(" ")
+                        .slice(0, 10)
+                        .join(" ") + "..."
+                    : "No description available."
+                }
+              />
             ))}
           </MobileSection>
 
@@ -316,9 +353,12 @@ function MobileMenu({ trainingPrograms }) {
             isOpen={open === "company"}
             onToggle={() => toggle("company")}
           >
-            {menuConfig.company.map((item) => (
-              <MobileLink key={item.title} {...item} />
-            ))}
+            <MobileLink title="About Us" href="/ectes/company/about-us" />
+            <MobileLink
+              title="Careers and Jobs"
+              href="/ectes/company/careers"
+            />
+            <MobileLink title="Contact Support" href="/ectes/company/contact" />
           </MobileSection>
 
           {/* Toggles */}

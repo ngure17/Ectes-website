@@ -70,10 +70,10 @@ export default function FinalSection() {
   transition={{ duration: 0.6 }}
   className="rounded-2xl p-8 sm:p-12 flex flex-col items-center text-center space-y-6 shadow-xl border hover:border-slate-50"
 >
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-200">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold light: text-black dark:text-slate-200 ">
           Ready for Our Services?
         </h1>
-        <p className="text-lg sm:text-xl text-slate-300 max-w-2xl">
+        <p className="text-lg sm:text-xl text-black dark:text-slate-300 max-w-2xl">
           Reach us through our 24/7 support team for training programs,
           construction services, or any inquiries.
         </p>
@@ -81,14 +81,14 @@ export default function FinalSection() {
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-amber-500 text-white rounded-xl font-semibold hover:bg-amber-600 transition-all shadow-lg hover:shadow-xl"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-amber-500 text-black dark:text-white rounded-xl font-semibold hover:bg-amber-600 transition-all shadow-lg hover:shadow-xl"
           >
             <Phone className="h-5 w-5" />
             Contact Us
           </Link>
           <a
             href="#location"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-slate-800 text-white rounded-xl font-semibold hover:bg-slate-900 transition-all shadow-lg hover:shadow-xl"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-slate-800 text-black dark:text-white rounded-xl font-semibold hover:bg-slate-900 transition-all shadow-lg hover:shadow-xl"
           >
             <MapPin className="h-5 w-5" />
             Find Our Location
@@ -107,10 +107,10 @@ export default function FinalSection() {
           <span className="mb-4 inline-block text-sm font-semibold uppercase tracking-wider text-amber-600">
             Trusted Partners
           </span>
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-300">
+          <h1 className="text-3xl sm:text-4xl font-bold text-black dark:text-slate-300">
             Our Key Clients
           </h1>
-          <p className="mt-4 text-lg text-slate-300 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg text-black dark:text-slate-300 max-w-2xl mx-auto">
             Proud to serve leading organizations across Kenya with dedication
             and excellence.
           </p>
@@ -118,14 +118,14 @@ export default function FinalSection() {
 
         <div className="space-y-8">
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-slate-300 text-center sm:text-left">
+            <h2 className="text-xl font-semibold mb-4 text-black dark:text-slate-300 text-center sm:text-left">
               Training Clients
             </h2>
             <ClientMarquee clients={trainingClients} />
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-slate-300 text-center sm:text-left">
+            <h2 className="text-xl font-semibold mb-4 text-black dark:text-slate-300 text-center sm:text-left">
               Construction Clients
             </h2>
             <ClientMarquee clients={constructionClients} reverse />
@@ -146,10 +146,10 @@ export default function FinalSection() {
             <Award className="h-4 w-4" />
             <span className="text-sm font-semibold">Quality Assurance</span>
           </span>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mt-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-black dark:text-white mt-4">
             Certifications & Compliance
           </h1>
-          <p className="mt-4 text-lg text-slate-400">
+          <p className="mt-4 text-lg text-black dark:text-slate-400">
             ECTES operates under strict regulatory standards
           </p>
         </div>
@@ -182,7 +182,7 @@ export default function FinalSection() {
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-500/20 text-amber-400">
                   <item.icon className="h-5 w-5" />
                 </div>
-                <p className="text-slate-300 text-sm sm:text-base">
+                <p className="text-black dark:text-slate-300 text-sm sm:text-base">
                   {item.text}
                 </p>
               </motion.div>
@@ -192,7 +192,7 @@ export default function FinalSection() {
           <div className="flex justify-center">
             <div className="relative">
               <div className="absolute inset-0 bg-amber-500/20 blur-3xl rounded-full" />
-              <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-2xl p-6 shadow-xl flex items-center justify-center">
+              <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-2xl p-6 dark:shadow-xl flex items-center justify-center">
                 <img
                   src="/certification-image.png"
                   alt="ECTES Certification"

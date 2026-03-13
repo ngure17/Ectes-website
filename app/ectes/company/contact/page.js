@@ -78,7 +78,7 @@ export default function ContactPage() {
                         Phone Numbers
                       </h3>
                       <p className="">
-                        +254 112 88 40 78
+                        +254 712 88 40 78
                         <br />
                         +254 753 88 77 61
                       </p>

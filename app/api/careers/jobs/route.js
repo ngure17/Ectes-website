@@ -1,3 +1,6 @@
+import pool from "@/lib/db";
+import { NextResponse } from "next/server";
+
 export async function POST(req) {
   const body = await req.json();
 
@@ -39,16 +42,14 @@ RETURNING *
   return NextResponse.json(result.rows[0]);
 }
 
-
 //Get all jobs with department name and filter by search and status
-export async function GET(req){
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
 
-const { searchParams } = new URL(req.url);
+  const search = searchParams.get("search");
+  const status = searchParams.get("status");
 
-const search = searchParams.get("search");
-const status = searchParams.get("status");
-
-let query = `
+  let query = `
 SELECT
 jobs.*,
 departments.name AS department
@@ -58,22 +59,31 @@ ON jobs.department_id = departments.id
 WHERE 1=1
 `;
 
-let values = [];
+  let values = [];
 
-if(search){
-values.push(`%${search}%`);
-query += ` AND title ILIKE $${values.length}`;
+  if (search) {
+    values.push(`%${search}%`);
+    query += ` AND title ILIKE $${values.length}`;
+  }
+
+  if (status) {
+    values.push(status);
+    query += ` AND status=$${values.length}`;
+  }
+
+  query += ` ORDER BY created_at DESC`;
+
+  const result = await pool.query(query, values);
+
+  return NextResponse.json(result.rows);
 }
 
-if(status){
-values.push(status);
-query += ` AND status=$${values.length}`;
-}
+export async function DELETE(req) {
+  const { id } = await req.json();
 
-query += ` ORDER BY created_at DESC`;
+  await pool.query("DELETE FROM jobs WHERE id=$1", [id]);
 
-const result = await pool.query(query,values);
-
-return NextResponse.json(result.rows);
-
+  return NextResponse.json({
+    success: true,
+  });
 }

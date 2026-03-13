@@ -91,7 +91,7 @@ export default function ApplicationsTable({ applications, refresh }) {
           </thead>
           <tbody>
             {applications.map((app) => (
-              <tr key={app.application_id} className="hover:bg-purple-400">
+              <tr key={app.application_id} className="hover:bg-amber-600">
                 <td className="border px-2 py-1">{app.application_id}</td>
                 <td className="border px-2 py-1">{app.full_name}</td>
                 <td className="border px-2 py-1">{app.email}</td>

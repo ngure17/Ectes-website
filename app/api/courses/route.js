@@ -28,47 +28,95 @@ export async function GET() {
   }
 }
 
-// POST new course
+// POST new course on offer
 export async function POST(req) {
   try {
     const formData = await req.formData();
 
-    const course_title = formData.get("course_title");
-    const course_description = formData.get("course_description");
-    const course_modules = formData.get("course_modules");
+    const course_name = formData.get("course_title");
+    const brief_explanation = formData.get("brief_explanation");
+    const duration = formData.get("duration");
+    const intake_period = formData.get("intake_period");
+    const level = formData.get("level");
+    const examination_type = formData.get("examination_type");
+    const course_start_date = formData.get("course_start_date");
+    const course_end_date = formData.get("course_end_date");
+    const mode_of_learning = formData.get("mode_of_learning");
+    const image_url = formData.get("image_url");
 
-    // Image handling
-    const imageFile = formData.get("image_file");
+    const imageFile = formData.get("image");
+    const outlineFile = formData.get("course_outline_file");
+
     let imageBuffer = null;
     let imageType = null;
 
-    if (imageFile && imageFile.arrayBuffer) {
+    let outlineBuffer = null;
+    let outlineType = null;
+
+    // Handle image upload
+    if (imageFile && imageFile.size > 0) {
       const bytes = await imageFile.arrayBuffer();
       imageBuffer = Buffer.from(bytes);
       imageType = imageFile.type;
     }
 
+    // Handle course outline pdf
+    if (outlineFile && outlineFile.size > 0) {
+      const bytes = await outlineFile.arrayBuffer();
+      outlineBuffer = Buffer.from(bytes);
+      outlineType = outlineFile.type;
+    }
+
     const result = await pool.query(
       `
-      INSERT INTO ectes_training_courses
-      (course_title, course_description, course_modules, image, image_type)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO courses
+      (
+        course_name,
+        brief_explanation,
+        duration,
+        intake_period,
+        level,
+        examination_type,
+        course_start_date,
+        course_end_date,
+        mode_of_learning,
+        image_url,
+        image,
+        image_type,
+        course_outline_file,
+        course_outline_type
+      )
+      VALUES
+      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
       RETURNING *
       `,
       [
-        course_title,
-        course_description,
-        course_modules,
+        course_name,
+        brief_explanation,
+        duration,
+        intake_period,
+        level,
+        examination_type,
+        course_start_date,
+        course_end_date,
+        mode_of_learning,
+        image_url,
         imageBuffer,
         imageType,
+        outlineBuffer,
+        outlineType,
       ],
     );
 
-    return NextResponse.json({ success: true, course: result.rows[0] });
+    return NextResponse.json({
+      success: true,
+      course: result.rows[0],
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Course creation error:", error);
+
     return NextResponse.json(
-      { error: "Failed to create course" },
+      { success: false, error: "Failed to create course" },
       { status: 500 },
     );
   }

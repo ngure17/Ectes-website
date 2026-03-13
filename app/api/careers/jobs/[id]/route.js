@@ -1,36 +1,13 @@
-export async function GET(req) {
-  const { searchParams } = new URL(req.url);
+import pool from "@/lib/db";
+import { NextResponse } from "next/server";
 
-  const search = searchParams.get("search");
-  const status = searchParams.get("status");
 
-  let query = `
-SELECT
-jobs.*,
-departments.name AS department
-FROM jobs
-LEFT JOIN departments
-ON jobs.department_id = departments.id
-WHERE 1=1
-`;
+export async function GET(req, { params }) {
+  const { id } = await params;
 
-  let values = [];
+  const result =  pool.query("SELECT * FROM jobs WHERE id=$1", [id]);
 
-  if (search) {
-    values.push(`%${search}%`);
-    query += ` AND title ILIKE $${values.length}`;
-  }
-
-  if (status) {
-    values.push(status);
-    query += ` AND status=$${values.length}`;
-  }
-
-  query += ` ORDER BY created_at DESC`;
-
-  const result = await pool.query(query, values);
-
-  return NextResponse.json(result.rows);
+  return NextResponse.json(result);
 }
 
 export async function DELETE(req, { params }) {

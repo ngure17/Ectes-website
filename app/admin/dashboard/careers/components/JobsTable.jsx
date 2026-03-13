@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 
 import {
   Table,
@@ -14,14 +15,36 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function JobsTable({ jobs }) {
+  const [data, setData] = useState(jobs);
+
+  // DELETE JOB
+  const handleDelete = async (id) => {
+    const confirmDelete = confirm("Are you sure you want to delete this job?");
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch("/api/careers/jobs", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!res.ok) throw new Error("Delete failed");
+
+      // remove from UI
+      setData(data.filter((job) => job.id !== id));
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete job");
+    }
+  };
+
   return (
-    <div className="bg-white border rounded-xl p-6">
+    <div className="bg-white dark:bg-black border rounded-xl p-6 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">Job Listings</h2>
-
-        <Link href="/admin/careers/jobs/add">
-          <Button>+ Add Job</Button>
-        </Link>
       </div>
 
       <Table>
@@ -37,7 +60,7 @@ export default function JobsTable({ jobs }) {
         </TableHeader>
 
         <TableBody>
-          {jobs.map((job) => (
+          {data.map((job) => (
             <TableRow key={job.id}>
               <TableCell className="font-medium">{job.title}</TableCell>
 
@@ -47,24 +70,34 @@ export default function JobsTable({ jobs }) {
 
               <TableCell>
                 <span
-                  className={`px-2 py-1 rounded text-xs ${
-                    job.status === "Published"
+                  className={`px-2 py-1 rounded text-xs font-medium ${
+                    job.status === "published"
                       ? "bg-green-100 text-green-700"
-                      : "bg-gray-100 text-gray-600"
+                      : job.status === "draft"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-red-100 text-red-700"
                   }`}
                 >
                   {job.status}
                 </span>
               </TableCell>
 
-              <TableCell>{job.applicants}</TableCell>
+              <TableCell>{job.applicants_count}</TableCell>
 
               <TableCell className="text-right space-x-2">
-                <Button size="sm" variant="outline">
-                  Edit
-                </Button>
+                {/* EDIT */}
+                <Link href={`/admin/dashboard/careers/jobs/edit/${job.id}`}>
+                  <Button size="sm" variant="outline">
+                    Edit
+                  </Button>
+                </Link>
 
-                <Button size="sm" variant="destructive">
+                {/* DELETE */}
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => handleDelete(job.id)}
+                >
                   Delete
                 </Button>
               </TableCell>

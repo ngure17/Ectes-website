@@ -14,8 +14,8 @@ export default function Links() {
               <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem>
-                    <BreadcrumbLink href="/admin/dashboard/careers/jobs">
-                      Home
+                    <BreadcrumbLink href="/admin/dashboard/careers">
+                      Application dashboard
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
