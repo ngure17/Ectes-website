@@ -46,8 +46,8 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="bg-gradient-href-b from-slate-50 href-white py-20 px-6 sm:px-12 lg:px-24">
-      <div className="max-w-5xl mx-auto text-center">
+    <section className="bg-gradient-href-b from-slate-50 href-white py-20 px-6 sm:px-12 lg:px-24 bg-[url('/Ect.jpg')] opacity-90 bg-cover bg-center bg-no-repeat ">
+      <div className="max-w-5xl mx-auto text-center ">
         {/* Main Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -64,7 +64,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-lg sm:text-xl light:text-black dark:text-slate-200 leading-relaxed max-w-3xl mx-auto"
+          className="text-lg font-bold  light:text-black dark:text-slate-200 leading-relaxed max-w-3xl mx-auto"
         >
           <span className="font-bold text-amber-600">
             Eastlands College of Technology Enterprise Services (ECTES)
@@ -120,7 +120,7 @@ export default function HeroSection() {
           viewport={{ once: true }}
           className="mt-16"
         >
-          <h3 className="font-bold text-2xl dark: text-slate-300 mb-8 light:text-gray-400">
+          <h3 className="font-bold text-2xl">
             See More About Us
           </h3>
 

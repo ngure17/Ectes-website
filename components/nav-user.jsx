@@ -2,10 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
@@ -27,7 +25,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Link } from "lucide-react";
 
 export function NavUser() {
   const { isMobile } = useSidebar();

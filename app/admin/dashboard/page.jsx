@@ -1,8 +1,8 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
@@ -11,18 +11,31 @@ import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function Page() {
-  const { isLoaded, isSignedIn } = useUser();
   const router = useRouter();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Redirect to login if not signed in
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      router.push("/admin/login");
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/me"); // verify token via cookie
+        if (res.ok) {
+          setIsLoggedIn(true);
+        } else {
+          router.push("/auth/login");
+        }
+      } catch {
+        router.push("/auth/login");
+      } finally {
+        setIsLoaded(true);
+      }
     }
-  }, [isLoaded, isSignedIn, router]);
 
-  if (!isSignedIn) return null; // prevents content flash before redirect
+    checkAuth();
+  }, [router]);
 
+  // Prevent content flash before auth check completes
+  if (!isLoaded || !isLoggedIn) return null;
   return (
     <SidebarProvider
       style={{

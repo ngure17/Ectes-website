@@ -13,46 +13,26 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
   useSidebar,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-
-import { useUser, SignOutButton } from "@clerk/nextjs";
 
 import Link from "next/link";
 import {
   LayoutDashboard,
-  Bell,
-  AlertTriangle,
-  Map,
-  BarChart3,
-  Settings,
-  Blocks,
-  ChevronRight,
   BookOpen,
   Globe,
-  CardSim,
+  Blocks,
+  ChevronRight,
   LandPlot,
   Award,
 } from "lucide-react";
+import { CardSim } from "lucide-react";
 import Image from "next/image";
-
 import { useState } from "react";
 import { NavUser } from "./nav-user";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-};
-
 export function AppSidebar() {
   const { state } = useSidebar();
-  const { isLoaded, isSignedIn, user } = useUser();
 
-  // independent states per dropdown
   const [overviewOpen, setOverviewOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
   const [globalOpen, setGlobalOpen] = useState(false);
@@ -92,15 +72,12 @@ export function AppSidebar() {
             Platform
           </p>
 
-          {/* Overview */}
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => setOverviewOpen(!overviewOpen)}>
               <Blocks className="w-5 h-5" />
               <span>Overview</span>
               <ChevronRight
-                className={`ml-auto transition-transform ${
-                  overviewOpen ? "rotate-90" : ""
-                }`}
+                className={`ml-auto transition-transform ${overviewOpen ? "rotate-90" : ""}`}
               />
             </SidebarMenuButton>
 
@@ -118,15 +95,12 @@ export function AppSidebar() {
             )}
           </SidebarMenuItem>
 
-          {/* Page Editor */}
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => setEditorOpen(!editorOpen)}>
               <BookOpen className="w-5 h-5" />
               <span>Page Editor</span>
               <ChevronRight
-                className={`ml-auto transition-transform ${
-                  editorOpen ? "rotate-90" : ""
-                }`}
+                className={`ml-auto transition-transform ${editorOpen ? "rotate-90" : ""}`}
               />
             </SidebarMenuButton>
 
@@ -146,15 +120,12 @@ export function AppSidebar() {
             )}
           </SidebarMenuItem>
 
-          {/* Global Layouts */}
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => setGlobalOpen(!globalOpen)}>
               <Globe className="w-5 h-5" />
               <span>Global Layouts</span>
               <ChevronRight
-                className={`ml-auto transition-transform ${
-                  globalOpen ? "rotate-90" : ""
-                }`}
+                className={`ml-auto transition-transform ${globalOpen ? "rotate-90" : ""}`}
               />
             </SidebarMenuButton>
 
@@ -175,7 +146,7 @@ export function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
 
-        {/* ===== SECOND SECTION ===== */}
+        {/* ===== OPERATIONS SECTION ===== */}
         <SidebarMenu className="mt-10">
           <p className="px-3 text-xs font-semibold text-muted-foreground uppercase">
             Operations Management
@@ -186,9 +157,7 @@ export function AppSidebar() {
               <CardSim className="w-5 h-5" />
               <span>Services</span>
               <ChevronRight
-                className={`ml-auto transition-transform ${
-                  overviewOpen ? "rotate-90" : ""
-                }`}
+                className={`ml-auto transition-transform ${servicesOpen ? "rotate-90" : ""}`}
               />
             </SidebarMenuButton>
 
@@ -206,15 +175,12 @@ export function AppSidebar() {
             )}
           </SidebarMenuItem>
 
-          {/* Page Editor */}
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => setCoursesOpen(!coursesOpen)}>
               <LandPlot className="w-5 h-5" />
               <span>Courses</span>
               <ChevronRight
-                className={`ml-auto transition-transform ${
-                  overviewOpen ? "rotate-90" : ""
-                }`}
+                className={`ml-auto transition-transform ${coursesOpen ? "rotate-90" : ""}`}
               />
             </SidebarMenuButton>
 
@@ -245,9 +211,7 @@ export function AppSidebar() {
               <Blocks className="w-5 h-5" />
               <span>Jobs & Careers</span>
               <ChevronRight
-                className={`ml-auto transition-transform ${
-                  overviewOpen ? "rotate-90" : ""
-                }`}
+                className={`ml-auto transition-transform ${jobsOpen ? "rotate-90" : ""}`}
               />
             </SidebarMenuButton>
 
@@ -266,7 +230,7 @@ export function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
 
-        {/*========= SSection 3===========*/}
+        {/* ===== APPLICATION MANAGEMENT ===== */}
         <SidebarMenu className="mt-10">
           <p className="px-3 text-xs font-semibold text-muted-foreground uppercase">
             Application Management
@@ -279,9 +243,7 @@ export function AppSidebar() {
               <Award className="w-5 h-5" />
               <span>Applications</span>
               <ChevronRight
-                className={`ml-auto transition-transform ${
-                  overviewOpen ? "rotate-90" : ""
-                }`}
+                className={`ml-auto transition-transform ${applicationsOpen ? "rotate-90" : ""}`}
               />
             </SidebarMenuButton>
 
@@ -309,21 +271,10 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter className="flex justify-center p-2">
-        {isLoaded && isSignedIn && user && (
-          <Link href="/admin/profile" className="w-full">
-            <NavUser
-              user={{
-                name: user.firstName + " " + user.lastName,
-                email: user.emailAddresses[0].emailAddress,
-                avatar: user.profileImageUrl,
-              }}
-            />
-          </Link>
-        )}
+      {/* ===== Footer — NavUser handles its own auth fetch ===== */}
+      <SidebarFooter className="border-t p-2">
+        <NavUser />
       </SidebarFooter>
-
-      <SidebarFooter className="border-t p-4" />
     </Sidebar>
   );
 }
