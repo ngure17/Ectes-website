@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 
 import {
@@ -13,33 +12,12 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { Eye } from "lucide-react";
 
 export default function JobsTable({ jobs }) {
   const [data, setData] = useState(jobs);
-
-  // DELETE JOB
-  const handleDelete = async (id) => {
-    const confirmDelete = confirm("Are you sure you want to delete this job?");
-    if (!confirmDelete) return;
-
-    try {
-      const res = await fetch("/api/careers/jobs", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
-
-      if (!res.ok) throw new Error("Delete failed");
-
-      // remove from UI
-      setData(data.filter((job) => job.id !== id));
-    } catch (error) {
-      console.error(error);
-      alert("Failed to delete job");
-    }
-  };
+  const router = useRouter();
 
   return (
     <div className="bg-white dark:bg-black border rounded-xl p-6 min-h-screen">
@@ -61,7 +39,12 @@ export default function JobsTable({ jobs }) {
 
         <TableBody>
           {data.map((job) => (
-            <TableRow key={job.id}>
+            <TableRow
+              key={job.id}
+              onClick={() =>
+                router.push(`/admin/dashboard/careers/jobs/${job.id}`)
+              }
+            >
               <TableCell className="font-medium">{job.title}</TableCell>
 
               <TableCell>{job.department}</TableCell>
@@ -85,20 +68,11 @@ export default function JobsTable({ jobs }) {
               <TableCell>{job.applicants_count}</TableCell>
 
               <TableCell className="text-right space-x-2">
-                {/* EDIT */}
-                <Link href={`/admin/dashboard/careers/jobs/edit/${job.id}`}>
-                  <Button size="sm" variant="outline">
-                    Edit
-                  </Button>
-                </Link>
+                {/* View */}
 
-                {/* DELETE */}
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDelete(job.id)}
-                >
-                  Delete
+                <Button size="sm" variant="outline">
+                  <Eye />
+                  View
                 </Button>
               </TableCell>
             </TableRow>

@@ -40,6 +40,7 @@ export function AppSidebar() {
   const [coursesOpen, setCoursesOpen] = useState(false);
   const [jobsOpen, setJobsOpen] = useState(false);
   const [applicationsOpen, setApplicationsOpen] = useState(false);
+  const [invoiceOpen, setInvoiceOpen] = useState(false);
 
   return (
     <Sidebar className="border-r">
@@ -267,6 +268,32 @@ export function AppSidebar() {
                 </SidebarMenuSubItem>
               </SidebarMenuSub>
             )}
+          </SidebarMenuItem>
+        </SidebarMenu>
+
+        <SidebarMenu className="mt-10">
+          <p className="px-3 text-xs font-semibold text-muted-foreground uppercase">
+            Invoice
+          </p>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={() => setInvoiceOpen(!invoiceOpen)}>
+              <Award className="w-5 h-5" />
+              <span>Invoice</span>
+              <ChevronRight
+                className={`ml-auto transition-transform ${invoiceOpen ? "rotate-90" : ""}`}
+              />
+            </SidebarMenuButton>
+            <SidebarMenuSub>
+              <SidebarMenuSubItem>
+                <SidebarMenuSubButton asChild>
+                  <Link href="/admin/dashboard">
+                    <LandPlot />
+                    <span>Create Invoice</span>
+                  </Link>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+            </SidebarMenuSub>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>

@@ -3,41 +3,55 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
-export default function AddJobForm({ onSubmit }) {
+const emptyForm = {
+  title: "",
+  department_id: "",
+  location: "",
+  job_type: "",
+  experience_level: "",
+  salary_range: "",
+  description: "",
+  responsibilities: "",
+  requirements: "",
+  status: "draft",
+};
+
+export default function AddJobForm({ onSubmit, initialData }) {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState(initialData || emptyForm);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    department_id: "",
-    location: "",
-    job_type: "",
-    experience_level: "",
-    salary_range: "",
-    description: "",
-    responsibilities: "",
-    requirements: "",
-    status: "draft",
-  });
+  const isEditing = !!initialData;
+
+  // Sync if initialData arrives late (after async fetch in parent)
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   // Fetch departments
   useEffect(() => {
     async function fetchDepartments() {
-      const res = await fetch("/api/careers/departments");
-      const data = await res.json();
-      setDepartments(data);
+      try {
+        const res = await fetch("/api/careers/departments");
+        if (!res.ok) throw new Error("Failed to fetch departments");
+        const data = await res.json();
+        setDepartments(data);
+      } catch (err) {
+        console.error(err);
+        alert("Error loading departments");
+      }
     }
-
     fetchDepartments();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: name === "department_id" ? Number(value) : value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -45,55 +59,16 @@ export default function AddJobForm({ onSubmit }) {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/careers/jobs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!res.ok) throw new Error("Failed to create job");
-
-      alert("Job created successfully");
-
-      setFormData({
-        title: "",
-        department_id: "",
-        location: "",
-        job_type: "",
-        experience_level: "",
-        salary_range: "",
-        description: "",
-        responsibilities: "",
-        requirements: "",
-        status: "draft",
-      });
-    } catch (error) {
-      console.error(error);
-      alert("Error creating job");
-    }
-
-    try {
       await onSubmit(formData);
-
-      setFormData({
-        title: "",
-        department_id: "",
-        location: "",
-        job_type: "",
-        experience_level: "",
-        salary_range: "",
-        description: "",
-        responsibilities: "",
-        requirements: "",
-        status: "draft",
-      });
+      if (!isEditing) {
+        setFormData(emptyForm);
+      }
     } catch (error) {
       console.error(error);
+      alert("Error submitting job");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -101,7 +76,9 @@ export default function AddJobForm({ onSubmit }) {
       {/* Header */}
       <div className="mb-8">
         <p className="text-gray-500 mt-1">
-          Add a new job posting to the careers page
+          {isEditing
+            ? "Edit the job posting details below"
+            : "Add a new job posting to the careers page"}
         </p>
       </div>
 
@@ -121,7 +98,6 @@ export default function AddJobForm({ onSubmit }) {
         {/* Department */}
         <div>
           <label className="block mb-2 font-medium">Department</label>
-
           <select
             name="department_id"
             value={formData.department_id}
@@ -130,7 +106,6 @@ export default function AddJobForm({ onSubmit }) {
             className="w-full border rounded-md p-3 dark:bg-gray-800"
           >
             <option value="">Select Department</option>
-
             {departments.map((dep) => (
               <option key={dep.id} value={dep.id}>
                 {dep.name}
@@ -142,7 +117,6 @@ export default function AddJobForm({ onSubmit }) {
         {/* Location */}
         <div>
           <label className="block mb-2 font-medium">Location</label>
-
           <input
             name="location"
             value={formData.location}
@@ -154,7 +128,6 @@ export default function AddJobForm({ onSubmit }) {
         {/* Job Type */}
         <div>
           <label className="block mb-2 font-medium">Job Type</label>
-
           <select
             name="job_type"
             value={formData.job_type}
@@ -170,10 +143,9 @@ export default function AddJobForm({ onSubmit }) {
           </select>
         </div>
 
-        {/* Experience */}
+        {/* Experience Level */}
         <div>
           <label className="block mb-2 font-medium">Experience Level</label>
-
           <select
             name="experience_level"
             value={formData.experience_level}
@@ -188,10 +160,9 @@ export default function AddJobForm({ onSubmit }) {
           </select>
         </div>
 
-        {/* Salary */}
+        {/* Salary Range */}
         <div>
           <label className="block mb-2 font-medium">Salary Range</label>
-
           <input
             name="salary_range"
             value={formData.salary_range}
@@ -204,7 +175,6 @@ export default function AddJobForm({ onSubmit }) {
         {/* Status */}
         <div>
           <label className="block mb-2 font-medium">Job Status</label>
-
           <select
             name="status"
             value={formData.status}
@@ -220,7 +190,6 @@ export default function AddJobForm({ onSubmit }) {
         {/* Description */}
         <div>
           <label className="block mb-2 font-medium">Description</label>
-
           <textarea
             name="description"
             value={formData.description}
@@ -233,7 +202,6 @@ export default function AddJobForm({ onSubmit }) {
         {/* Responsibilities */}
         <div>
           <label className="block mb-2 font-medium">Responsibilities</label>
-
           <textarea
             name="responsibilities"
             value={formData.responsibilities}
@@ -246,7 +214,6 @@ export default function AddJobForm({ onSubmit }) {
         {/* Requirements */}
         <div>
           <label className="block mb-2 font-medium">Requirements</label>
-
           <textarea
             name="requirements"
             value={formData.requirements}
@@ -261,7 +228,7 @@ export default function AddJobForm({ onSubmit }) {
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3"
           disabled={loading}
         >
-          {loading ? "Creating..." : "Create Job"}
+          {loading ? "Saving..." : isEditing ? "Update Job" : "Create Job"}
         </Button>
       </form>
     </div>
