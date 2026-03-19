@@ -52,7 +52,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-[url('/Ect.jpg')] bg-cover bg-center bg-no-repeat from-indigo-900 to-gray-900 font-inter">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 bg-[url('/ECT.jpg')] bg-cover bg-center bg-no-repeat from-indigo-900 to-gray-900 font-inter">
       <div className="flex flex-col lg:flex-row rounded-3xl overflow-hidden shadow-2xl w-full max-w-md lg:max-w-5xl">
         {/* LEFT PANEL: Image/Info - Desktop only */}
         <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-16 bg-indigo-700 text-white">

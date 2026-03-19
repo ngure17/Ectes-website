@@ -50,7 +50,7 @@ export default function HeroSection() {
       {/* Background image layer */}
       <div
         style={{
-          backgroundImage: "url('/Ect.jpg')",
+          backgroundImage: "url('/ECT.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
