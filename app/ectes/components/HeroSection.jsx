@@ -46,7 +46,7 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="bg-gradient-href-b from-slate-50 href-white py-20 px-6 sm:px-12 lg:px-24 bg-[url('/Ect.jpg')] opacity-90 bg-cover bg-center bg-no-repeat ">
+    <section className="bg-gradient-to-b from-slate-50 to-white py-20 px-6 sm:px-12 lg:px-24 bg-[url('/Ect.jpg')] bg-cover bg-center bg-no-repeat opacity-90">
       <div className="max-w-5xl mx-auto text-center ">
         {/* Main Headline */}
         <motion.h1
