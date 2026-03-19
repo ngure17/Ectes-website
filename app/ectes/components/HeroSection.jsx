@@ -46,8 +46,23 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="bg-gradient-to-b from-slate-50 to-white py-20 px-6 sm:px-12 lg:px-24 bg-[url('/Ect.jpg')] bg-cover bg-center bg-no-repeat opacity-90">
-      <div className="max-w-5xl mx-auto text-center ">
+    <section className="relative py-20 px-6 sm:px-12 lg:px-24">
+      {/* Background image layer */}
+      <div
+        style={{
+          backgroundImage: "url('/Ect.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+        className="absolute inset-0 opacity-100"
+      />
+
+      {/* Gradient overlay */}
+      <div className="absolute inset-0" />
+
+      {/* Content */}
+      <div className="relative z-10 max-w-5xl mx-auto text-center">
         {/* Main Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -55,7 +70,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6 }}
           className="text-4xl sm:text-5xl lg:text-6xl font-extrabold light:text-black dark:text-slate-200 leading-tight mb-6"
         >
-          Building Skills, Futures <br></br>
+          Building Skills, Futures <br />
           <span className="text-amber-500">Driving Innovation.</span>
         </motion.h1>
 
@@ -64,7 +79,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-lg font-bold  light:text-black dark:text-slate-200 leading-relaxed max-w-3xl mx-auto"
+          className="text-lg font-bold light:text-black dark:text-slate-200 leading-relaxed max-w-3xl mx-auto"
         >
           <span className="font-bold text-amber-600">
             Eastlands College of Technology Enterprise Services (ECTES)
@@ -73,6 +88,7 @@ export default function HeroSection() {
           hands-on training, real-world projects, and high-quality technical
           solutions for businesses, institutions, and communities.
         </motion.p>
+
         {/* Gallery Section */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
@@ -96,7 +112,7 @@ export default function HeroSection() {
                 </span>
               </div>
 
-              <h2 className="mb-4 text-3xl font-bold dark: text-white sm:text-4xl">
+              <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl">
                 Training & Project Gallery
               </h2>
 
@@ -120,14 +136,12 @@ export default function HeroSection() {
           viewport={{ once: true }}
           className="mt-16"
         >
-          <h3 className="font-bold text-2xl">
-            See More About Us
-          </h3>
+          <h3 className="font-bold text-2xl mb-6">See More About Us</h3>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/ectes/company/trainings"
-              className="group inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 l= dark:text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="group inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 dark:text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all"
             >
               <Wrench className="h-5 w-5" />
               Explore Our Training Programs
